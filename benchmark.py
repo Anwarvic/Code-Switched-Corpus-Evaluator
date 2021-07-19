@@ -39,8 +39,22 @@ def pre_process(dataset_filepath):
     return utters, tags
 
 
+def get_stats(ev, data_filepath):
+    utters, tags = pre_process(data_filepath)
+    exclude_tags = tags-{'lang1', 'lang2'}
+    score = ev.evaluate_corpus(utters, exclude_tags)
+    tokens_count, utters_count, switched_count = ev.get_stats(utters, exclude_tags)
+    print(f"Tokens: {tokens_count}\n\
+Utters: {utters_count}\n\
+Switched Utters: {switched_count} ({switched_count / utters_count * 100}%)\n\
+Score: {score}")
+
+
+
 if __name__ == "__main__":
     ev = Evaluator()
-    utters, tags = pre_process("./data/lid_spaeng/dev.conll")
-    score = ev.evaluate_corpus(utters, tags-{'lang1', 'lang2'})
-    print(score)
+    # get_stats(ev, "./data/lid_spaeng/train.conll")
+    # get_stats(ev, "./data/lid_spaeng/dev.conll")
+    get_stats(ev, "./data/lid_nepeng/train.conll")
+    print()
+    get_stats(ev, "./data/lid_nepeng/dev.conll")
